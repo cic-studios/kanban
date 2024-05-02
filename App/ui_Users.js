@@ -417,7 +417,8 @@ function cicServerRPC_AdvanceDay()
     formData.append('userPassword', login_userData[2]);
     formData.append('sessionID', live_sessionData[0]);
     formData.append('sessionDay', live_sessionData[6]+1);
-    formData.append('maxColumns', live_htmlColumnsList.htmlColumns.length-1);
+    //console.log('maxColumns', live_htmlColumnsList.htmlColumns.length-1);
+    //formData.append('maxColumns', live_htmlColumnsList.htmlColumns.length-1);
     GoogleAppsScriptPost(cicConnectorDB.gAppScriptID, 'AdvanceDay', formData, cicClientRPC_RecieveOperationConfirmationLiveSession, null);
     ShowResponse('Advancing day...', 5, 'green');
 }
