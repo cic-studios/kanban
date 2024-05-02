@@ -229,6 +229,7 @@ function LiveSessionUsersToHtmlList(sessionUsersString, outputDivContainer=null,
     const htmlUserList = document.createElement('div');
     htmlUserList.className = 'selfCrossStretch flexRow flexStart crossCenter flowWrap pad5 gap5';
     htmlUserList.dataset.userData = userData;
+    htmlUserList.dataset.userCard = userData[0][0];
     for(let userIndex=0; userIndex<userData.length; userIndex++)
     {
         const cardID = userData[userIndex][0];
@@ -343,6 +344,56 @@ function LiveSessionColumnsToHtmlArray(sessionColumnsString, outputDivContainer=
         htmlColumn.style.verticalAlign = 'middle';
         htmlColumn.style.fontWeight = 'bold';
         htmlColumnsInfo.htmlColumns.push(htmlColumn);
+        if(colIndex==0)
+        {
+            const addTasksButtonDiv = document.createElement('div');
+            addTasksButtonDiv.id = `htmlAddTasksButtonDiv`;
+            addTasksButtonDiv.className = 'flexRow flexCenter crossCenter flowNoWrap';
+            const addTasksProfileInput = document.createElement('input');
+            addTasksProfileInput.id = `htmlAddTasksProfileInput`;
+            addTasksProfileInput.type = 'text';
+            addTasksProfileInput.placeholder = 'Profile';
+            addTasksProfileInput.style.width = '70px';
+            addTasksButtonDiv.append(addTasksProfileInput);
+            const addTasksCountInput = document.createElement('input');
+            addTasksCountInput.id = `htmlAddTasksCountInput`;
+            addTasksCountInput.type = 'number';
+            addTasksCountInput.placeholder = 1;
+            addTasksCountInput.value = 1;
+            addTasksCountInput.min = 1;
+            addTasksCountInput.max = 20;
+            addTasksCountInput.style.width = '35px';
+            addTasksButtonDiv.append(addTasksCountInput);
+            const addTasksButton = document.createElement('button');
+            addTasksButton.id = `htmlAddTasksButton`;
+            addTasksButton.textContent = 'Add Tasks';
+            addTasksButton.addEventListener('click',()=>{cicServerRPC_CreateAutoTasks();});
+            addTasksButtonDiv.append(addTasksButton);
+            htmlColumn.appendChild(addTasksButtonDiv);
+        }
+        else if(colIndex<columnData.length-1)
+        {
+            const wipDiv = document.createElement('div');
+            wipDiv.id = `htmlWipDiv${colIndex}`;
+            wipDiv.className = 'flexRow flexCenter crossCenter flowNoWrap';
+            const wipMinusButton = document.createElement('button');
+            wipMinusButton.id = `htmlWipMinusButton${colIndex}`;
+            wipMinusButton.textContent = '-';
+            wipDiv.append(wipMinusButton);
+            const wipLabel = document.createElement('div');
+            wipLabel.id = `htmlWipLabel${colIndex}`;
+            wipLabel.textContent = 'wip';
+            wipDiv.append(wipLabel);
+            const wipPlusButton = document.createElement('button');
+            wipPlusButton.id = `htmlWipPlusButton${colIndex}`;
+            wipPlusButton.textContent = '+';
+            wipDiv.append(wipPlusButton);
+            htmlColumn.appendChild(wipDiv);
+        }
+        else
+        {
+            //last column
+        }
     }
 
     htmlColumnsInfo.outputDivContainer = outputDivContainer;
@@ -392,6 +443,8 @@ function TaskdataToHtmlCard(taskDataRow, maxColumn)
     taskMainDiv.style.minHeight = '125px';
     taskMainDiv.style.width = '200px';
 
+
+    const sessionDay = live_sessionData[6];
     const ID = taskDataRow.ID;
     const TaskNum = taskDataRow.TaskNum;
     const Name = taskDataRow.Name;
@@ -404,8 +457,8 @@ function TaskdataToHtmlCard(taskDataRow, maxColumn)
     const Helpers = taskDataRow.Helpers;
     const Column = taskDataRow.Column;
     const Priority = taskDataRow.Priority;
-    const DaysStale = Math.max(0,(DayEnd>0)?(DayEnd-DayStart-Column):(cicConnectorDB.dataLiveSession.Day-DayStart-Column));
-    const DaysLive = (DayEnd>0)?(DayEnd-DayStart):(cicConnectorDB.dataLiveSession.Day-DayStart);
+    const DaysStale = Math.max(0,(DayEnd>0)?(DayEnd-DayStart-Column):(sessionDay-DayStart-Column));
+    const DaysLive = (DayEnd>0)?(DayEnd-DayStart):(sessionDay-DayStart);
     taskMainDiv.dataset.ID = ID;
     taskMainDiv.dataset.TaskNum = TaskNum;
     taskMainDiv.dataset.Name = Name;
@@ -423,7 +476,7 @@ function TaskdataToHtmlCard(taskDataRow, maxColumn)
 
     const taskTitleContainerDiv = document.createElement('div');
     taskTitleContainerDiv.id = `htmlTaskTitleContainer${rowIndex}`;
-    taskTitleContainerDiv.className = 'flexRow flexBetween crossCenter selfCrossStretch mbaTableCell-title';
+    taskTitleContainerDiv.className = `flexRow flexBetween crossCenter selfCrossStretch mbaTableCell-title`;
     taskMainDiv.append(taskTitleContainerDiv);
     {
         const taskRegressButton = document.createElement('button');
@@ -469,7 +522,7 @@ function TaskdataToHtmlCard(taskDataRow, maxColumn)
     {
         const taskNumDiv = document.createElement('div');
         taskNumDiv.id = `htmlTaskNum${rowIndex}`;
-        taskNumDiv.className = 'selfCrossStretch';
+        taskNumDiv.className = `selfCrossStretch${Locked?' lockedTask':''}`;
         taskNumDiv.style.fontSize = '20px';
         taskNumDiv.style.textAlign = 'center';
         taskNumDiv.style.verticalAlign = 'middle';

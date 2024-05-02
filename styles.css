@@ -354,6 +354,11 @@ body
     /*box-shadow: 0px 0px 8px 0px var(--mbaYeetYellow);*/
     text-shadow: 0px 0px 8px var(--mbaYeetYellow);
 }
+.lockedTask
+{
+    color: red;
+    border-color: var(--mbaBackBright);
+}
 
 
 

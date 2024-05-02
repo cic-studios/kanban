@@ -153,36 +153,37 @@
                         <div id="eventDetailsDiv" class="flexCol flexCenter crossCenter" style="margin: 0px 15px 0px 0px;">
                             <div id="eventTitleDiv" class="mbaTitle " style="text-align:center;">Event</div>
                             <div id="eventDetailsDiv" class="" style="text-align:center;">
-                                Event Description asd asd <br>
-                                as fasdfasdf asdf asd fasd fas fasd<br>
-                                asd fasdfasd asdfasd fasdfasdas fasdfasdfasd fasdfasdfasdf<br>
-                                yyyyyy
+                                In Kanban we work the board from right to left.<br>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>
+                                In bibendum scelerisque nibh, eu rhoncus justo consectetur nec.<br>
+                                Nulla nec fringilla diam, a fringilla lectus.<br>
+                                Interdum et malesuada fames ac ante ipsum primis in faucibus.
                             </div>
                         </div>
                     </div>
                     <div id="boardDetailsContainerMainDiv" class="flexRow flexCenter crossStretch flowWrap pad5">
                         <div id="boardInfoDiv" class="flexCol flexCenter crossEnd selfFlexShrink" style="font-size:16px;">
                             <div class="selfFlexGrow"></div>
-                            <div class="flowNoWrap">Items on board: <b>0</b></div>
-                            <div class="flowNoWrap">Items in progress: <b>0</b></div>
-                            <div class="flowNoWrap">Items blocked: <b>0</b></div>
-                            <div class="flowNoWrap">Items completed: <b>0</b></div>
-                            <div class="flowNoWrap">Blocked ratio: <b>0</b></div>
-                            <div class="flowNoWrap">Maximum age: <b>0</b></div>
+                            <div id="boardItemsDiv" class="flowNoWrap">Items on board: <b>?</b></div>
+                            <div id="progressItemsDiv" class="flowNoWrap">Items in progress: <b>?</b></div>
+                            <div id="blockedItemsDiv" class="flowNoWrap">Items blocked: <b>?</b></div>
+                            <div id="completedItemsDiv" class="flowNoWrap">Items completed: <b>?</b></div>
+                            <div id="blockedRatioDiv" class="flowNoWrap">Blocked ratio: <b>?</b></div>
+                            <div id="maxAgeDiv" class="flowNoWrap">Maximum age: <b>?</b></div>
                             <div class="selfFlexGrow"></div>
                         </div>
                         <div id="sessionDayDiv" class="flexCol flexCenter crossCenter" style="position: relative;">
                             <label id="sessionDayTitleDiv" for="sessionDayButton" class="mbaInputLabel" style="color:var(--mbaLogoGold); position:absolute; top:-4px; left:45px; font-size:20px; font-weight:bold; text-align:center; vertical-align:middle; z-index:100;">Day</label>
-                            <button id="sessionDayButton" class="mbaIcon mbaDayArrow" style="width:max(10vw,10vh); height:max(10vw, 10vh); min-height:100px; min-width:100px; margin:0px 5px 0px 30px; z-index:99;"  onclick="event.preventDefault(); cicServerRPC_AdvanceDay();"></button>
-                            <label id="sessionDayCountDiv" for="sessionDayButton" class="mbaInputLabel centerDiv" style="color:var(--mbaLogoGold); text-align:center; vertical-align:middle; font-size:50px; z-index:100;">0</label>
+                            <button id="sessionDayButton" class="mbaIcon mbaDayArrow" style="width:max(10vw,10vh); height:max(10vw, 10vh); min-height:110px; min-width:110px; margin:0px 5px 0px 30px; z-index:99;"  onclick="event.preventDefault(); cicServerRPC_AdvanceDay();"></button>
+                            <label id="sessionDayCountDiv" for="sessionDayButton" class="mbaInputLabel centerDiv" style="color:var(--mbaLogoGold); text-align:center; vertical-align:middle; font-size:40px; z-index:100;">Start</label>
                         </div>
                     </div>
                 </div>
                 <div id="liveSessionColumnsMainDiv" class="mbaBox selfFlexGrow flexCol flexStart crossStretch" style="width:95vw;">
                     <div class = "flexRow flexEnd crossCenter" style="position:relative;">
-                        <div class = "selfFlexGrow flexCol flexCenter crossCenter">
+                        <!--<div class = "selfFlexGrow flexCol flexCenter crossCenter">
                             <div class = "mbaTitle" style="text-align:center;">Tasks</div>
-                        </div>
+                        </div>-->
                     </div>
                     <div id="liveSessionColumnsContainerDiv" class="selfFlexGrow selfCrossStretch flexRow flexStretch crossStretch" style="overflow:auto;">
                         <!-- SESSION COLUMNS AND TASKS HERE -->

@@ -46,7 +46,7 @@ function SwapPageMainDiv(pageState)
     currPage = pageState;
 }
 
-//SubscribeFPSevent(LiveSessionRefresh, 5, cicFPSeventType.repeatInterval);
+SubscribeFPSevent(LiveSessionRefresh, 2, cicFPSeventType.repeatInterval);
 function LiveSessionRefresh()
 {
     if(currPage != enumPageState.livesession || login_userData == null || live_sessionData == null || live_taskData == null)
@@ -250,6 +250,7 @@ function CancelLoginLiveSession()
     document.getElementById('LOGINLIVESESSION_MainDiv').style.display = 'none';
 }
 
+let attempt = null;
 function cicServerRPC_LoginLiveSession(htmlForm)
 {
     const sessionName = document.getElementById('loginLiveSessionNameInput').value;
@@ -269,6 +270,7 @@ function cicServerRPC_LoginLiveSession(htmlForm)
     formData.append('userPassword', login_userData[2]);
     formData.append('sessionName', sessionName);
     formData.append('sessionPassword', sessionPassword);
+    attempt = sessionPassword;
     GoogleAppsScriptPost(cicConnectorDB.gAppScriptID, 'LoginLiveSession', formData, cicClientRPC_RecieveLiveSessionLogin);
     ShowResponse('Joining live session...', 5, 'green');
     document.getElementById('loginLiveSessionForm').reset();
@@ -327,12 +329,9 @@ function cicClientRPC_RecieveTasks(resultData)
 
 function LoadSessionDetails()
 {
-    console.log('userData',login_userData);
-    console.log('sessionData',live_sessionData);
-    console.log('taskData',live_taskData);
     if(live_htmlUsersList)
     {
-        if(live_htmlUsersList.dataset.userData[0][0]%2==0)
+        if(live_htmlUsersList.dataset.userCard%2==0)
         {
             document.getElementById('blackInstructionsDiv').style.display = 'block';
             document.getElementById('redInstructionsDiv').style.display = 'none';
@@ -343,8 +342,39 @@ function LoadSessionDetails()
             document.getElementById('redInstructionsDiv').style.display = 'block';
         }
     }
-    document.getElementById('sessionDayCountDiv').innerHTML = live_sessionData[6];
-    //document.getElementById('sessionTaskCountDiv').innerHTML = taskData.length;
+    const sessionDay = live_sessionData[6];
+    const boardColumnsCount = live_htmlColumnsList.htmlColumns.length;
+    const boardItemsCount = live_taskData.rows.length;
+    let inQueueItemsCount = 0;
+    let inProgressItemsCount = 0;
+    let blockedItemsCount = 0;
+    let completedItemsCount = 0;
+    let maxItemAge = 0;
+    for(let i=0; i<boardItemsCount; i++)
+    {
+        if(live_taskData.rows[i].Column<=0)
+            inQueueItemsCount++;
+        else if(live_taskData.rows[i].Column>=boardColumnsCount-1)
+            completedItemsCount++;
+        else
+        {   
+            inProgressItemsCount++;
+            if(live_taskData.rows[i].Locked==true)
+                blockedItemsCount++;
+            const age = (live_taskData.rows[i].DayEnd>0)?(live_taskData.rows[i].DayEnd-live_taskData.rows[i].DayStart):(sessionDay-live_taskData.rows[i].DayStart);
+            if(age>maxItemAge)
+                maxItemAge = age;
+        }
+        
+    }
+    const blockedItemsRatio = (blockedItemsCount/inProgressItemsCount)*100;
+    document.getElementById('sessionDayCountDiv').innerHTML = ((sessionDay==0)?'Start':sessionDay);
+    document.getElementById('boardItemsDiv').innerHTML = `Items on board: <b>${boardItemsCount}</b>`;
+    document.getElementById('progressItemsDiv').innerHTML = `Items in progress: <b>${inProgressItemsCount}</b>`;
+    document.getElementById('blockedItemsDiv').innerHTML = `Items blocked: <b>${blockedItemsCount}</b>`;
+    document.getElementById('completedItemsDiv').innerHTML = `Items completed: <b>${completedItemsCount}</b>`;
+    document.getElementById('blockedRatioDiv').innerHTML = `Blocked ratio: <b>${blockedItemsRatio}%</b>`;
+    document.getElementById('maxAgeDiv').innerHTML = `Maximum age: <b>${maxItemAge}</b>`;
 }
 
 function cicServerRPC_MoveTask(taskID, currColumn, posOffset, maxColumn)
@@ -365,8 +395,6 @@ function cicServerRPC_PrioritizeTask(taskID, currPriority, newPriority)
     formData.append('userPassword', login_userData[2]);
     formData.append('taskID', taskID);
     formData.append('taskRow', ((currPriority==newPriority)?(currPriority-1):newPriority));
-    console.log('Prioritize Task: ', taskID, currPriority, newPriority);
-    console.log(...formData);
     GoogleAppsScriptPost(cicConnectorDB.gAppScriptID, 'MoveTaskRow', formData, cicClientRPC_RecieveOperationConfirmationLiveSession, null);
     ShowResponse('Prioritizing task...', 5, 'green');
 }
@@ -391,6 +419,18 @@ function cicServerRPC_AdvanceDay()
     formData.append('sessionDay', live_sessionData[6]+1);
     GoogleAppsScriptPost(cicConnectorDB.gAppScriptID, 'AdvanceDay', formData, cicClientRPC_RecieveOperationConfirmationLiveSession, null);
     ShowResponse('Advancing day...', 5, 'green');
+}
+
+function cicServerRPC_CreateAutoTasks()
+{
+    const formData = new FormData();
+    const templateName = WashAndTrimString(document.getElementById('htmlAddTasksProfileInput').value);
+    let taskAmount = document.getElementById('htmlAddTasksCountInput').value;
+    formData.append('autotaskTemplate', (templateName=='')?'Software':document.getElementById('htmlAddTasksProfileInput').value);
+    formData.append('autotaskQuantity', (taskAmount=='')?1:(taskAmount<1?1:(taskAmount>20?20:((taskAmount>=1&&taskAmount<=20)?taskAmount:1))));
+    formData.append('autotaskSessionName', live_sessionData[1]);
+    formData.append('autotaskSessionPassword', attempt);
+    GoogleAppsScriptPost(cicConnectorDB.gAppScriptID, 'CreateAutoTasks', formData, cicClientRPC_RecieveOperationConfirmationLiveSession, null);
 }
 
 function cicServerRPC_SetUserState(newState)

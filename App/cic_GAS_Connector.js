@@ -142,7 +142,6 @@ function GoogleAppsScriptPost(appsScriptID, rpcID, formData, responseCallback, c
         responseJson.url = url;
         if(callbackTempDataHolder)
             responseJson.response.tempDataHolder = callbackTempDataHolder;
-        console.log(responseJson);
         responseCallback(responseJson);
     })
     .catch(error => 
@@ -163,8 +162,8 @@ function GoogleSheetQueryTableSQL(spreadsheetID, sheetName, querySQL, responseCa
     .then(response => response.text())
     .then(responseText => 
     {
-        console.log(`GoogleSheetQueryTableSQL(spreadsheetID:${spreadsheetID}, sheetName:${sheetName}, querySQL:${querySQL}, responseCallback(callbackTempDataHolder:${callbackTempDataHolder})`);
-        console.log('responseText=>',responseText);
+        //console.log(`GoogleSheetQueryTableSQL(spreadsheetID:${spreadsheetID}, sheetName:${sheetName}, querySQL:${querySQL}, responseCallback(callbackTempDataHolder:${callbackTempDataHolder})`);
+        //console.log('responseText=>',responseText);
         const cutString = responseText.split('setResponse(');
         const sheetJsonObjs = JSON.parse(cutString[1].slice(0,-2));
         const jsTable = JsonSheetObjectsToJsTableObject(sheetJsonObjs, sheetName);
