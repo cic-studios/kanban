@@ -552,16 +552,18 @@ function TaskdataToHtmlCard(taskDataRow, maxColumn)
             const taskPriorityDiv = document.createElement('div');
             taskPriorityDiv.id = `htmlTaskPriority${rowIndex}`;
             taskPriorityDiv.className = 'flexRow flexStart crossCenter selfCrossStretch';
+            //taskPriorityDiv.className = 'flexHide';
+            taskPriorityDiv.style.display = 'hidden';
             taskPriorityDiv.style.padding = '0px 3px 0px 3px';
             taskPriorityDiv.style.fontSize = '12px';
             taskPriorityDiv.style.textAlign = 'start';
             taskPriorityDiv.style.verticalAlign = 'middle';
             taskPriorityDiv.style.fontWeight = 'normal';
             taskPriorityDiv.style.gap = '0px 2px';
-            taskPriorityDiv.textContent = 'Priority: ';//`Priority: ${taskDataTable.rows[rowIndex].Priority}`;
+            //taskPriorityDiv.textContent = 'Priority: ';//`Priority: ${taskDataTable.rows[rowIndex].Priority}`;
             taskDetailsDiv.append(taskPriorityDiv);
             {
-                for(let buttonPriority=1; buttonPriority<=5; buttonPriority++)
+                /*for(let buttonPriority=1; buttonPriority<=5; buttonPriority++)
                 {
                     const taskPriorityButton = document.createElement('button');
                     taskPriorityButton.id = `htmlTaskPriority${buttonPriority}Button${rowIndex}`;
@@ -574,7 +576,7 @@ function TaskdataToHtmlCard(taskDataRow, maxColumn)
                     taskPriorityButton.style.border = 'none';
                     taskPriorityButton.addEventListener('click',()=>{cicServerRPC_PrioritizeTask(ID, Priority, buttonPriority);});
                     taskPriorityDiv.append(taskPriorityButton);
-                }
+                }*/
                 const taskLockButton = document.createElement('button');
                 taskLockButton.id = `htmlTaskLockButton${rowIndex}`;
                 taskLockButton.className = 'mbaIcon selfCrossCenter';
